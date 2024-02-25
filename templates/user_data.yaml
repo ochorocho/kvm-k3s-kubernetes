@@ -1,0 +1,28 @@
+#cloud-config
+
+users:
+  - default
+  - name: k3s
+    passwd: "$6$72E41wfeau0z8a/t$a1Icgdhix1aq/to33K/JFGQeuL1hwtglKwSLkjI2K1h19FNSuGQ/U4xoadNa1dEJBj12A4VzcvA3BCnDkbBOp."
+    shell: /bin/bash
+    lock-passwd: false
+    ssh_pwauth: True
+    chpasswd: { expire: False }
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: users, admin
+#    ssh_authorized_keys:
+#      - <SSH_PUBLIC_KEY>
+
+# Required for "wait_for_lease" to work
+package_update: true
+packages:
+  - qemu-guest-agent
+  - avahi-daemon
+runcmd:
+  - systemctl start qemu-guest-agent.service
+  - systemctl start avahi-daemon
+  # Install Kubernetes - main node
+  - ${k3s_command}
+
+hostname: ${hostname}
+create_hostname_file: true

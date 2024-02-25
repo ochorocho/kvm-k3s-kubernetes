@@ -1,0 +1,12 @@
+#cloud-config
+
+network:
+    version: 2
+    renderer: networkd
+    ethernets:
+        ens3:
+            dhcp4: no
+            addresses: [${ip_address}/24]
+            gateway4: ${gateway}
+            nameservers:
+                addresses: [${dns}]
